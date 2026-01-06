@@ -4,12 +4,31 @@ import firebase_admin
 from firebase_admin import credentials, messaging
 
 app = FastAPI()
+@app.get("/")
+def root():
+    return {"status": "Exam Alert Backend Running"}
+
 
 # ---------------------------
 # Firebase setup
 # ---------------------------
-cred = credentials.Certificate("firebase-key.json")
-firebase_admin.initialize_app(cred)
+import os
+import json
+import firebase_admin
+from firebase_admin import credentials, messaging
+
+if not firebase_admin._apps:
+    if "FIREBASE_KEY" in os.environ:
+        # Running in Railway / Cloud
+        cred = credentials.Certificate(
+            json.loads(os.environ["FIREBASE_KEY"])
+        )
+    else:
+        # Running locally
+        cred = credentials.Certificate("firebase-key.json")
+
+    firebase_admin.initialize_app(cred)
+
 
 # ---------------------------
 # In-memory tracking (demo-safe)
