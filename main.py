@@ -8,6 +8,15 @@ app = FastAPI()
 def root():
     return {"status": "Exam Alert Backend Running"}
 
+# ---------------------------
+# Store invigilator tokens (demo-safe)
+# ---------------------------
+invigilator_tokens = set()
+
+@app.post("/register")
+def register_device(token: str):
+    invigilator_tokens.add(token)
+    return {"status": "registered"}
 
 # ---------------------------
 # Firebase setup
