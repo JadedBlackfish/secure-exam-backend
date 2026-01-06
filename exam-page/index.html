@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Secure Exam</title>
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .warning {
+      color: #facc15;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Secure Examination</h1>
+<p>Do not switch tabs or exit fullscreen.</p>
+<div class="warning" id="warning"></div>
+
+<script>
+  const studentId = "S101";
+  const examId = "EXAM1";
+  const backendUrl = "http://127.0.0.1:8000/event";
+  const deviceToken = "TEST_TOKEN"; // real token later
+
+  let focusLostCount = 0;
+
+  function sendEvent() {
+    fetch(backendUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        student_id: studentId,
+        exam_id: examId,
+        event_type: "focus_lost",
+        device_token: deviceToken
+      })
+    });
+  }
+
+  window.addEventListener("blur", () => {
+    focusLostCount++;
+    document.getElementById("warning").innerText =
+      "Warning: Focus lost (" + focusLostCount + ")";
+    sendEvent();
+  });
+
+  function requestFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    }
+  }
+
+  document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) {
+      sendEvent();
+    }
+  });
+
+  requestFullscreen();
+</script>
+
+</body>
+</html>

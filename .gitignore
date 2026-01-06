@@ -1,0 +1,5 @@
+venv/
+firebase-key.json
+__pycache__/
+.env
+desktop.ini
